@@ -56,21 +56,25 @@ def knight_moves(space):
             (15, space % 8 != 0 and space < 48),
             (17, space % 8 != 7 and space < 48)
         ]
-    return [space + move for move, condition in knight_moves if condition]
+    l1 = [space + move for move, condition in knight_moves if condition]
+    l2 = [l1]
+    return l2
     
 def king_moves(space):
     king_moves = [
             (-9, space % 8 != 0 and space > 8),
             (-8, space % 8 != 0 and space > 8),
             (-7, space % 8 != 0 and space > 8),
-            (1, space % 8 != 7 and space < 56),
+            (-1, space % 8 != 7 and space > 0),
             (8, space % 8 != 7 and space < 56),
             (9, space % 8 != 7 and space < 56),
-            (-1, space % 8 != 7 and space > 8),
             (7, space % 8 != 0 and space < 56),
-            (-7, space % 8 != 0 and space > 8)
+            (1, space % 8 != 0 and space > 8)
     ]
-    return [space + move for move, condition in king_moves if condition]
+    
+    l1 = [space + move for move, condition in king_moves if condition]
+    l2 = [x]
+    return l2
 
 def get_straights(space):
     u = []
@@ -97,10 +101,7 @@ def get_straights(space):
                 if left%8 >= 0 and left // 8 == space // 8:
                     l.append(left)
     
-    straights.append(u)
-    straights.append(r)
-    straights.append(d)
-    straights.append(l)
+    straights = [u, r, d, l]
     return straights
 
 def get_diagonals(space):
@@ -132,7 +133,7 @@ def get_diagonals(space):
                 if ld >= 0:
                     dld.append(ld)
     
-    diagonals = [dlu, dru, drd, dld]
+    diagonals = [dld, dlu, drd, dru]
     return diagonals
     # print(diagonals)
                 
@@ -155,16 +156,21 @@ def get_pawns(space, moved, color):
                 
                     
 def legal_moves(board, moves, colour):
-    o = 1 if colour else 0
+    o = 0 if colour else 1
     for x in moves.values():
-        for list_item in x:
-            for item in list_item:
-                if board[item] % 2 == o:
-                    index = list_item.index(item)
-                    del_in = index -len(list_item)
-                    del list_item[del_in]
-    return moves
+            for direction in x:
+                if type(direction) == int:
+                    continue
+                for square in direction:
+                    if board[square] % 2 == o:
+                        del direction[direction.index(square)::]
+                    elif board[square] == 0:
+                        continue
+                    else:
+                        del direction[direction.index(square)+1::]
 
+    return moves
+                
         
         
                 
@@ -173,7 +179,7 @@ def legal_moves(board, moves, colour):
 
 def poss_moves(board, piece_board, color):
     moves = {}
-    o = 1 if color else 0
+    o = 0 if color else 1
     for x in board:
         if board[x] != 0:
             if board[x] % 2 == o:
@@ -190,20 +196,23 @@ def poss_moves(board, piece_board, color):
                             break
                         moves[x] = smove
                 elif board[x] == 4+o:
-                    moves[x] = king_moves(x)
+                    moves[x] = knight_moves(x)
                 elif board[x] == 8+o:
                     moves[x] = get_diagonals(x)
                 elif board[x] == 16+o:
                     moves[x] = get_straights(x)
                 elif board[x] == 32+o:
-                    moves[x] = get_straights(x), get_diagonals(x)
+                    moves[x] = get_straights(x)  +  get_diagonals(x)
                 elif board[x] == 64+o:
                     moves[x] = king_moves(x)
-    legal = legal_moves(board, moves, color)
+    legal = moves
     return legal
     
 
                            
-                        
-# print(get_diagonals(57))                 
-            
+if __name__ == "__main__":                        
+    print(get_diagonals(57))         
+    print(get_straights(57))        
+    print(get_pawns(57, False, True))
+    print(king_moves(57))
+    print(knight_moves(1))

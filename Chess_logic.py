@@ -32,7 +32,7 @@ while True:
         except:
             print("invalid fen")
     elif fen == "y":
-        fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+        fen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR"
         board = read_Fen(fen, board) if c else read_Fen(fen, board)  
         # print(board)
         break
@@ -40,7 +40,8 @@ while True:
         print("invalid input")
         continue
         
-     
+        
+#initialize screen and clock
 screen = pygame.display.set_mode((800 , 800))
 pygame.display.set_caption("Chess")
 clock = pygame.time.Clock()
@@ -50,7 +51,7 @@ board_pieces = {}
 
 
      
-    
+# load images
 white_Pawn = pygame.image.load('white_pawn.png').convert_alpha()
 black_Pawn = pygame.image.load('black_pawn.png').convert_alpha()
 white_Knight = pygame.image.load('white_knight.png').convert_alpha()
@@ -66,6 +67,18 @@ black_King = pygame.image.load('black_king.png').convert_alpha()
 
     
 def piece_board(board, allocated_board):
+    """
+    Populates the allocated_board dictionary with Piece objects, given a board and piece images.
+    using th piece_map dictionary and because it is a O(1) operation to look up a value 
+    it is very efficient
+
+    Parameters:
+        board (dict): A dictionary representing the chess board, with keys as the space number and values as the piece that is on that space.
+        allocated_board (dict): An empty dictionary to store the created Piece objects.
+
+    Returns:
+        allocated_board (dict): The populated allocated_board dictionary.
+    """
     allocated_board.clear()
 
     piece_map = {
@@ -97,9 +110,15 @@ def piece_board(board, allocated_board):
 
     
 def draw_board():
+    """
+    draw the board
+    depending on if you start as white or black
+    the first square will be black or white
+    """
     if c:
         for x in range(8):
             for y in range(8):
+                #the logic works because it is a 8x8 board and the screen is 800x800
                 pygame.draw.rect(screen, ("grey" if y % 2 - x % 2 == 0 else "teal"), (y*100 , x * 100,  100, 100))
                 if board[x + y * 8] != 0:
                     pos_board[x + y * 8] = ((x * 100 , y * 100))
@@ -154,6 +173,8 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN:
             # print(pygame.mouse.get_pos())
             posx, posy = pygame.mouse.get_pos()
+            #r_pos stand for real pos
+            #it is calculated by integer dividing by 100 so that the number will be rounded to 100
             r_posx = posx//100
             r_posy = posy//100
             
