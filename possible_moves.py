@@ -133,6 +133,7 @@ def get_diagonals(space):
                     dld.append(ld)
     
     diagonals = [dlu, dru, drd, dld]
+    return diagonals
     # print(diagonals)
                 
             
@@ -154,32 +155,25 @@ def get_pawns(space, moved, color):
                 
                     
 def legal_moves(board, moves, colour):
-    o = 0 if colour else 1
-    for x in moves:
-        for move in moves[x]:
-                for m in move:
-                    if type(m) == list:
-                        for under in m:
-                            if board[under] != 0:
-                                if board[under] % 2 == o:
-                                    m.remove(under)
-                                else:
-                                    m = m[:m.index(under):m.index(under)+1]
-                                    break
-                    if board[m] != 0:
-                        if board[m] % 2 == o:
-                            moves[x].remove(m)
-                        else:
-                            moves[x] = moves[x][:moves[x].index(m):moves[x].index(m)+1]
-                            break
+    o = 1 if colour else 0
+    for x in moves.values():
+        for list_item in x:
+            for item in list_item:
+                if board[item] % 2 == o:
+                    index = list_item.index(item)
+                    del_in = index -len(list_item)
+                    del list_item[del_in]
     return moves
+
+        
+        
                 
     
     
 
 def poss_moves(board, piece_board, color):
     moves = {}
-    o = 0 if color else 1
+    o = 1 if color else 0
     for x in board:
         if board[x] != 0:
             if board[x] % 2 == o:
@@ -209,7 +203,7 @@ def poss_moves(board, piece_board, color):
     return legal
     
 
-                            
+                           
                         
-                    
+# print(get_diagonals(57))                 
             

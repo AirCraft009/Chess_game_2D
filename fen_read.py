@@ -11,45 +11,18 @@ Queen = 32
 Queenb = 33
 King = 64
 Kingb = 65
-
-def read_Fen(note, board):
-    start = 64
-    flip = True
-    for piece in note.split("/"):
-        note = note[::-1]
-        for i, x in enumerate(list(piece)):
-            try:
-                y = int(x)
-                start -= y
-            except ValueError:
-                start -= 1
-                if x == "P":
-                    board[start] = Pawn
-                elif x == "B":
-                    board[start] = Bishop
-                elif x == "R":
-                    board[start] = Rook
-                elif x == "Q":
-                    board[start] = Queen
-                elif x == "K":
-                    board[start] = King
-                elif x == "N":
-                    board[start] = Knight
-                elif x == "p":
-                    board[start] = Pawnb
-                elif x == "b":
-                    board[start] = Bishopb
-                elif x == "r":
-                    board[start] = Rookb
-                elif x == "q":
-                    board[start] = Queenb
-                elif x == "k":
-                    board[start] = Kingb
-                elif x == "n":
-                    board[start] = Knightb
-                elif x == "/":
-                    flip = not flip
-                else:
-                    pass
-            
+def read_Fen(fen, board):
+    index = 0
+    piece_map = {
+        "P": Pawn, "B": Bishop, "R": Rook, "Q": Queen, "K": King, "N": Knight,
+        "p": Pawnb, "b": Bishopb, "r": Rookb, "q": Queenb, "k": Kingb, "n": Knightb
+    }
+    
+    for row in fen.split("/"):
+        for char in row: 
+            if char.isdigit():
+                index += int(char)#
+            else:
+                board[index] = piece_map.get(char, 0)
+                index += 1
     return board

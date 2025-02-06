@@ -27,13 +27,13 @@ while True:
     if fen == "n":       
         position = input("what position do you want to start at? (fen)")
         try:
-            board = read_Fen(position[::-1], board)
+            board = read_Fen(position, board)
             break
         except:
             print("invalid fen")
     elif fen == "y":
         fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
-        board = read_Fen(fen[::-1], board) if c else read_Fen(fen, board)  
+        board = read_Fen(fen, board) if c else read_Fen(fen, board)  
         # print(board)
         break
     else:
@@ -67,36 +67,26 @@ black_King = pygame.image.load('black_king.png').convert_alpha()
     
 def piece_board(board, allocated_board):
     allocated_board.clear()
-    pos = 0
-    for x in board:
-        piece = board[x]
-        if board[x] != 0:
-            if board[x] == 2:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "white", piece, 1, 1, white_Pawn, x)
-            elif board[x] == 3:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "black", piece, 1, 1, black_Pawn, x)
-            elif board[x] == 4:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "white", piece, 2, 2, white_Knight, x)
-            elif board[x] == 5:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "black", piece, 2, 2, black_Knight, x)
-            elif board[x] == 8:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "white", piece, 3, 3, white_Bishop, x)
-            elif board[x] == 9:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "black", piece, 3, 3, black_Bishop, x)
-            elif board[x] == 16:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "white", piece, 4, 4, white_Rook, x)
-            elif board[x] == 17:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "black", piece, 4, 4, black_Rook, x)
-            elif board[x] == 32:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "white", piece, 5, 5, white_Queen, x)
-            elif board[x] == 33:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "black", piece, 5, 5, black_Queen, x)
-            elif board[x] == 64:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "white", piece, 6, 6, white_King, x)
-            elif board[x] == 65:
-                allocated_board[pos] = Piece(pos_board[x][0], pos_board[x][1], "black", piece, 6, 6, black_King, x)
-            
-        pos += 1
+
+    piece_map = {
+        2:  ("white", 1, 1, white_Pawn),
+        3:  ("black", 1, 1, black_Pawn),
+        4:  ("white", 2, 2, white_Knight),
+        5:  ("black", 2, 2, black_Knight),
+        8:  ("white", 3, 3, white_Bishop),
+        9:  ("black", 3, 3, black_Bishop),
+        16: ("white", 4, 4, white_Rook),
+        17: ("black", 4, 4, black_Rook),
+        32: ("white", 5, 5, white_Queen),
+        33: ("black", 5, 5, black_Queen),
+        64: ("white", 6, 6, white_King),
+        65: ("black", 6, 6, black_King),
+    }
+    
+    for x, piece in board.items():
+        if piece in piece_map:
+            color, value1, value2, image = piece_map[piece]
+            allocated_board[x] = Piece(pos_board[x][0], pos_board[x][1], color, piece, value1, value2, image, x)
     return allocated_board
     
     
@@ -155,7 +145,7 @@ render_pieces(board_pieces)
 clicked = False
 
 print(poss_moves(board, board_pieces, c))
-"""while True:
+while True:
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -193,7 +183,7 @@ print(poss_moves(board, board_pieces, c))
                     board_pieces[r_posx + r_posy * 8].selected = False if board_pieces[r_posx + r_posy * 8].selected else True
                     draw_board()
                     render_pieces(board_pieces)
-    pygame.display.flip()"""
+    pygame.display.flip()
 
     # pygame.init()
  
