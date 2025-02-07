@@ -1,3 +1,4 @@
+import random
 import pygame
 from fen_read import read_Fen
 from possible_moves import poss_moves
@@ -32,7 +33,7 @@ while True:
         except:
             print("invalid fen")
     elif fen == "y":
-        fen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR"
+        fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR"
         board = read_Fen(fen, board) if c else read_Fen(fen, board)  
         # print(board)
         break
@@ -121,7 +122,7 @@ def draw_board():
                 #the logic works because it is a 8x8 board and the screen is 800x800
                 pygame.draw.rect(screen, ("grey" if y % 2 - x % 2 == 0 else "teal"), (y*100 , x * 100,  100, 100))
                 if board[x + y * 8] != 0:
-                    pos_board[x + y * 8] = ((x * 100 , y * 100))
+                    pos_board[x + y * 8] = ((700-x * 100 ,700- y * 100))
     else:
         for x in range(8):
             for y in range(8):
@@ -163,7 +164,9 @@ piece_board(board, board_pieces)
 render_pieces(board_pieces)
 clicked = False
 
-print(poss_moves(board, board_pieces, c))
+possible_moves_white = poss_moves(board, board_pieces, color)
+possible_moves_black = poss_moves(board, board_pieces, not color)
+print(possible_moves_white)
 while True:
     
     for event in pygame.event.get():
@@ -175,19 +178,28 @@ while True:
             posx, posy = pygame.mouse.get_pos()
             #r_pos stand for real pos
             #it is calculated by integer dividing by 100 so that the number will be rounded to 100
-            r_posx = posx//100
-            r_posy = posy//100
+            if c:
+                r_posx = 7 - posx//100
+                r_posy = 7 - posy//100
+
+            else:
+                r_posx = posx//100
+                r_posy = posy//100
             
             
             if clicked:
                 print("clicked")
-                if board[r_posx + r_posy * 8] == 0 or board[r_posx + r_posy * 8]%2  != piecevalue%2: 
+                rand_square = possible_moves_white[n_posx + n_posx*8]
+                print(n_posx + n_posy*8)
+                if (n_posx + n_posx*8) in rand_square: 
                     board[r_posx + r_posy * 8] = piecevalue
                     board[prev_x + prev_y * 8] = 0
                     draw_board()
                     board_pieces = piece_board(board, board_pieces)
                     board_pieces[r_posx + r_posy * 8].moved = True
                     render_pieces(board_pieces)
+                    possible_moves_white = poss_moves(board, board_pieces, color)
+                    possible_moves_black = poss_moves(board, board_pieces, not color)
                 else:
                     board_pieces[prev_x + prev_y * 8].selected = False if board_pieces[prev_x + prev_y * 8].selected else True
                     draw_board()
@@ -204,6 +216,9 @@ while True:
                     board_pieces[r_posx + r_posy * 8].selected = False if board_pieces[r_posx + r_posy * 8].selected else True
                     draw_board()
                     render_pieces(board_pieces)
+                    n_posx =  prev_x
+                    n_posy = 7 - prev_y
+                    print(r_posx + r_posy*8)
     pygame.display.flip()
 
     # pygame.init()
