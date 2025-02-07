@@ -205,7 +205,16 @@ clicked = False
 possible_moves_white = poss_moves(board, board_pieces, color)
 possible_moves_black = poss_moves(board, board_pieces, not color)
 print(possible_moves_white)
-play_2moves(10)
+# play_2moves(10)
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit()
+            break
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            
+
 """
 while True:
     

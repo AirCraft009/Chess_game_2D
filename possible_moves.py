@@ -69,11 +69,12 @@ def king_moves(space):
             (8, space % 8 != 7 and space < 56),
             (9, space % 8 != 7 and space < 56),
             (7, space % 8 != 0 and space < 56),
-            (1, space % 8 != 0 and space > 8)
+            (1, space % 8 != 0 and space < 63)
     ]
     
     l1 = [space + move for move, condition in king_moves if condition]
-    l2 = [x]
+    # print(l1)
+    l2 = [l1]
     return l2
 
 def get_straights(space):
@@ -143,36 +144,47 @@ def get_pawns(space, moved, color):
     pawn_moves = []
     if color:
         if moved:
-            pawn_moves = [space + 8]
+            pawn_moves = [space + 8 if space < 56 else 0]
         else:
-            pawn_moves = [space + 8, space + 16]
+            pawn_moves = [space + 8 if space < 56 else 0, space + 16 if space < 48 else 0]
     else:
         if moved:
-            pawn_moves = [space - 8]
+            pawn_moves = [space - 8 if space > 7 else 0]
         else:
-            pawn_moves = [space - 8, space - 16]
+            pawn_moves = [space - 8 if space > 7 else 0, space - 16 if space > 15 else 0]
     # print(pawn_moves)
     return pawn_moves
                 
-                    
-def legal_moves(board, moves, colour):
-    o = 0 if colour else 1
-    for x in moves.values():
-            for direction in x:
-                if type(direction) == int:
+        
+   
+   
+   
+def legal_move(moves, board, color):
+    legal_moves= {}
+    moves = []
+    o = 0 if color else 1
+    for origin_space in moves:
+        moves.clear()
+        if board[origin_space] == 2+o or board[origin_space] == 4+o or board[origin_space] == 64+o:
+            for space in origin_space:
+                if board[space] % 2 == o:
                     continue
-                for square in direction:
-                    if board[square] % 2 == o:
-                        del direction[direction.index(square)::]
-                    elif board[square] == 0:
-                        continue
-                    else:
-                        del direction[direction.index(square)+1::]
-
-    return moves
-                
-        
-        
+                else:
+                    moves.append(space)
+            legal_moves[origin_space] = moves
+        for poss_spaces in origin_space:
+            for space in poss_spaces:
+                if board[space] == 0:
+                    moves.append(space)
+                elif board[space] % 2 == o:
+                    break
+                else:
+                    moves.append(space)
+                    break
+        legal_moves[origin_space] = moves
+    return legal_moves
+                    
+             
                 
     
     
@@ -205,14 +217,14 @@ def poss_moves(board, piece_board, color):
                     moves[x] = get_straights(x)  +  get_diagonals(x)
                 elif board[x] == 64+o:
                     moves[x] = king_moves(x)
-    legal = moves
+    legal = legal_move(moves, board, color)
     return legal
     
 
                            
 if __name__ == "__main__":                        
-    print(get_diagonals(57))         
-    print(get_straights(57))        
-    print(get_pawns(57, False, True))
-    print(king_moves(57))
-    print(knight_moves(1))
+    # print(get_diagonals(57))         
+    # print(get_straights(57))        
+    # print(get_pawns(57, False, False))
+    print(king_moves(28))
+    # print(knight_moves(1))
