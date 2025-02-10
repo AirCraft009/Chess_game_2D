@@ -178,7 +178,7 @@ def legal_move(moves, board, color):
                 else:
                     under_moves.append(destination_space)
                     break
-        legal_moves[origin_space] = under_moves
+        legal_moves[origin_space] = under_moves.copy()
         under_moves.clear()
     return legal_moves
                     
@@ -206,7 +206,7 @@ def poss_moves(board, piece_board, color):
                 elif board[x] == 64+o:
                     moves[x] = king_moves(x)
     legal = legal_move(moves, board, color)
-    return moves
+    return legal
 
 """
 def generate_moves(board_pieces, board, depth):
@@ -264,7 +264,7 @@ def first_poss_depth_first(board, pieces, pos_board, screen):
 
                            
 if __name__ == "__main__":                        
-    # print(get_diagonals(57))         
+    print(get_diagonals(5))         
     # print(get_straights(57))        
     # print(get_pawns(57, False, False))
     print(king_moves(28))

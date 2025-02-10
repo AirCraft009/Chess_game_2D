@@ -7,7 +7,7 @@ import random
 turn = 0
 global board_pieces, white_moves, black_moves
 
-fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+fen = "rnbqkbnr/pppppppp/8/8/8/8/8/RNBQKBNR"
 board = read_Fen(fen, {})
 
 def get_pieces(pos_board, screen, images):
