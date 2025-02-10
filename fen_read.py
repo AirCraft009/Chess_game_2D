@@ -30,7 +30,7 @@ def read_Fen(fen, board):
     :param board: a dictionary representing the chess board the keys are spces 0-63, the values are the pieces
     :return: the modified board
     """
-    index = 0
+    index = 63
     piece_map = {
         "P": Pawn, "B": Bishop, "R": Rook, "Q": Queen, "K": King, "N": Knight,
         "p": Pawnb, "b": Bishopb, "r": Rookb, "q": Queenb, "k": Kingb, "n": Knightb
@@ -39,8 +39,10 @@ def read_Fen(fen, board):
     for row in fen.split("/"):
         for char in row: 
             if char.isdigit():
-                index += int(char)
+                for x in range(int(char)):
+                    board[index] = 0
+                    index -= 1
             else:
                 board[index] = piece_map.get(char, 0)
-                index += 1
+                index -= 1
     return board

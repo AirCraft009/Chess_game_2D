@@ -1,3 +1,5 @@
+from random import choice
+from piece_board import piece_board
 
 Pawn = 2
 Pawnb = 3
@@ -57,7 +59,7 @@ def knight_moves(space):
             (17, space % 8 != 7 and space < 48)
         ]
     l1 = [space + move for move, condition in knight_moves if condition]
-    l2 = [l1]
+    l2 = [[x] for x in l1]
     return l2
     
 def king_moves(space):
@@ -73,8 +75,7 @@ def king_moves(space):
     ]
     
     l1 = [space + move for move, condition in king_moves if condition]
-    # print(l1)
-    l2 = [l1]
+    l2 = [[x] for x in l1]
     return l2
 
 def get_straights(space):
@@ -153,35 +154,32 @@ def get_pawns(space, moved, color):
         else:
             pawn_moves = [space - 8 if space > 7 else 0, space - 16 if space > 15 else 0]
     # print(pawn_moves)
-    return pawn_moves
+    return [[x] for x in pawn_moves]
                 
         
    
    
    
 def legal_move(moves, board, color):
-    legal_moves= {}
-    moves = []
+    """
+    This function takes a dictionary of possible moves, a list representing the board, and a boolean indicating the color of the player.
+    It returns a dictionary of legal moves, where the keys are the origin spaces and the values are lists of destination spaces.
+    """
+    legal_moves = {}
+    under_moves = []
     o = 0 if color else 1
     for origin_space in moves:
-        moves.clear()
-        if board[origin_space] == 2+o or board[origin_space] == 4+o or board[origin_space] == 64+o:
-            for space in origin_space:
-                if board[space] % 2 == o:
-                    continue
-                else:
-                    moves.append(space)
-            legal_moves[origin_space] = moves
-        for poss_spaces in origin_space:
-            for space in poss_spaces:
-                if board[space] == 0:
-                    moves.append(space)
-                elif board[space] % 2 == o:
+        for direction in moves[origin_space]:
+            for destination_space in direction:
+                if board[destination_space] == 0:
+                    under_moves.append(destination_space)
+                elif board[destination_space] % 2 == o:
                     break
                 else:
-                    moves.append(space)
+                    under_moves.append(destination_space)
                     break
-        legal_moves[origin_space] = moves
+        legal_moves[origin_space] = under_moves
+        under_moves.clear()
     return legal_moves
                     
              
@@ -196,17 +194,7 @@ def poss_moves(board, piece_board, color):
         if board[x] != 0:
             if board[x] % 2 == o:
                 if board[x] == 2+o:
-                    smove = get_pawns(x, piece_board[x].moved, color)
-                    for m in smove:
-                        if board[m]%2 == o:
-                            smove.remove(m)
-                            break
-                        if board[m] == 0:
-                            pass
-                        else:
-                            smove = smove[:smove.index(m):smove.index(m)+1]
-                            break
-                        moves[x] = smove
+                    moves[x] = get_pawns(x, piece_board[x].moved, color)
                 elif board[x] == 4+o:
                     moves[x] = knight_moves(x)
                 elif board[x] == 8+o:
@@ -218,7 +206,60 @@ def poss_moves(board, piece_board, color):
                 elif board[x] == 64+o:
                     moves[x] = king_moves(x)
     legal = legal_move(moves, board, color)
-    return legal
+    return moves
+
+"""
+def generate_moves(board_pieces, board, depth):
+    moves_white = poss_moves(board, board_pieces, True)
+    moves_black = poss_moves(board, board_pieces, False)
+    test_board = board.copy()
+    while depth > 0:
+        white_moves = choice(list(moves_white.keys()))
+        black_moves = choice(list(moves_black.keys()))
+        move_white = moves_white[white_moves]
+        test_board[move_white] = board[white_moves]
+        test_board[] = 0
+        """#
+        
+def first_poss_depth_first(board, pieces, pos_board, screen):
+    color = True
+    white_moves = poss_moves(board, pieces, color)
+    test_board = board.copy()
+    epoch = 0
+    
+    while epoch < 30:
+        epoch += 1
+        rand_space = choice(list(white_moves.keys()))
+        moves = white_moves[rand_space][0]
+        if moves == []:
+            continue
+        move = moves[1]
+        piece = test_board[rand_space]
+        test_board[rand_space] = 0
+        test_board[move] = piece
+        pieces = piece_board(test_board, pieces, pos_board, screen)
+        
+        black_moves = poss_moves(test_board, pieces, not color)
+        rand_space = choice(list(black_moves.keys()))
+        moves = black_moves[rand_space][0]
+        if moves == []:
+            continue
+        move = moves[1]
+        piece = test_board[rand_space]
+        test_board[rand_space] = 0
+        test_board[move] = piece
+        pieces = piece_board(test_board, pieces)
+        if epoch % 10 == 0:
+            print(epoch)
+            
+    print(test_board)
+        
+        
+    
+
+
+    
+            
     
 
                            
