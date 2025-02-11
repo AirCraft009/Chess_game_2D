@@ -1,4 +1,5 @@
 from Chess_back_handling import *
+from possible_moves import first_poss_depth_first
 import pygame
 import random
 
@@ -24,16 +25,11 @@ images = [
     pygame.image.load(image_path + "black_king.png").convert_alpha()
 ]
 
-def draw_board():
-    for y in range(8):
-        for x in range(8):
-            pygame.draw.rect(screen, ("grey" if y % 2 - x % 2 == 0 else "teal"), (y*100 , x * 100,  100, 100))
-            poss_board[x + y * 8] = ((x*100 ,700-y * 100))
     
-draw_board()
+poss_board = draw_board(screen)
 pieces = get_pieces(poss_board, screen, images)
 render_pieces(pieces)
-print(poss_moves(board, pieces, True))
+# print(poss_moves(board, pieces, False))
 
 while True:
     for event in pygame.event.get():
@@ -41,5 +37,8 @@ while True:
             pygame.quit()
             quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            play_random(screen, poss_board, images)
+            board = first_poss_depth_first(board, pieces, poss_board, screen, images)
+            set_board(board)
+            update_board(screen, (0, 0), poss_board, images)
+            # print(is_checked(board, get_pieces(poss_board, screen, images)))
     pygame.display.flip()

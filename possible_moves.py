@@ -221,7 +221,7 @@ def generate_moves(board_pieces, board, depth):
         test_board[] = 0
         """#
         
-def first_poss_depth_first(board, pieces, pos_board, screen):
+def first_poss_depth_first(board, pieces, pos_board, screen, images):
     color = True
     white_moves = poss_moves(board, pieces, color)
     test_board = board.copy()
@@ -230,14 +230,14 @@ def first_poss_depth_first(board, pieces, pos_board, screen):
     while epoch < 30:
         epoch += 1
         rand_space = choice(list(white_moves.keys()))
-        moves = white_moves[rand_space][0]
-        if moves == []:
+        moves = white_moves[rand_space]
+        if moves:
             continue
         move = moves[1]
         piece = test_board[rand_space]
         test_board[rand_space] = 0
         test_board[move] = piece
-        pieces = piece_board(test_board, pieces, pos_board, screen)
+        pieces = piece_board(test_board, pos_board, screen, images)
         
         black_moves = poss_moves(test_board, pieces, not color)
         rand_space = choice(list(black_moves.keys()))
@@ -251,8 +251,7 @@ def first_poss_depth_first(board, pieces, pos_board, screen):
         pieces = piece_board(test_board, pieces)
         if epoch % 10 == 0:
             print(epoch)
-            
-    print(test_board)
+    return test_board
         
         
     
