@@ -1,5 +1,4 @@
 from Chess_back_handling import *
-from possible_moves import first_poss_depth_first
 import pygame
 import random
 
@@ -29,7 +28,7 @@ images = [
 poss_board = draw_board(screen)
 pieces = get_pieces(poss_board, screen, images)
 render_pieces(pieces)
-# print(poss_moves(board, pieces, False))
+print(poss_moves(board, pieces, False))
 
 while True:
     for event in pygame.event.get():
@@ -37,7 +36,7 @@ while True:
             pygame.quit()
             quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            board = first_poss_depth_first(board, pieces, poss_board, screen, images)
+            # board = first_poss_depth_first(board, pieces, poss_board, screen, images)
             set_board(board)
             update_board(screen, (0, 0), poss_board, images)
             # print(is_checked(board, get_pieces(poss_board, screen, images)))

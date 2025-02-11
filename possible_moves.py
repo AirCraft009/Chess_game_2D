@@ -206,8 +206,18 @@ def poss_moves(board, piece_board, color):
                 elif board[x] == 64+o:
                     moves[x] = king_moves(x)
     legal = legal_move(moves, board, color)
-    return legal
+    check_inc_legal = pseudo_to_legal(legal, board)
+    return check_inc_legal
 
+
+def pseudo_to_legal(moves, board):
+    for space in moves:
+        for direction in moves[space]:
+            for dest_space in direction:
+                if board[dest_space] == 64 or board[dest_space] == 65:
+                    c += 1
+                    direction.remove(dest_space)
+    return moves
 """
 def generate_moves(board_pieces, board, depth):
     moves_white = poss_moves(board, board_pieces, True)
@@ -221,37 +231,7 @@ def generate_moves(board_pieces, board, depth):
         test_board[] = 0
         """#
         
-def first_poss_depth_first(board, pieces, pos_board, screen, images):
-    color = True
-    white_moves = poss_moves(board, pieces, color)
-    test_board = board.copy()
-    epoch = 0
-    
-    while epoch < 30:
-        epoch += 1
-        rand_space = choice(list(white_moves.keys()))
-        moves = white_moves[rand_space]
-        if moves:
-            continue
-        move = moves[1]
-        piece = test_board[rand_space]
-        test_board[rand_space] = 0
-        test_board[move] = piece
-        pieces = piece_board(test_board, pos_board, screen, images)
-        
-        black_moves = poss_moves(test_board, pieces, not color)
-        rand_space = choice(list(black_moves.keys()))
-        moves = black_moves[rand_space][0]
-        if moves == []:
-            continue
-        move = moves[1]
-        piece = test_board[rand_space]
-        test_board[rand_space] = 0
-        test_board[move] = piece
-        pieces = piece_board(test_board, pieces)
-        if epoch % 10 == 0:
-            print(epoch)
-    return test_board
+
         
         
     

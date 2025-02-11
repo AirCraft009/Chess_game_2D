@@ -43,6 +43,10 @@ def read_Fen(fen, board):
                     board[index] = 0
                     index -= 1
             else:
+                if char == "K":
+                    king_square_white = index
+                elif char == "k":
+                    king_square_black = index
                 board[index] = piece_map.get(char, 0)
                 index -= 1
-    return board
+    return board, king_square_white, king_square_black

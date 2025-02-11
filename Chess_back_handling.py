@@ -9,7 +9,7 @@ poss_board = {}
 turn = 0
 global board_pieces, white_moves, black_moves
 
-fen = "rnbqkbnr/pppppppp/8/8/8/8/8/RNBQKBNR"
+fen = "rnbqkbnr/pppppppp/8/8/8/8/8/KNBQRBNR"
 board = read_Fen(fen, {})
 
 def get_pieces(pos_board, screen, images):
@@ -71,6 +71,13 @@ def play_random(screen, images):
         return pos_board
     except Exception as e:
         play_random(screen, images)
+        
+def unmake_move(move: tuple[int, int]): 
+    board[move[0]] = board[move[1]]
+    board[move[1]] = 0 
+    turn == 0 if turn == 1 else 1 
+
+
 
     
 
